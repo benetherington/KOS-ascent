@@ -12,11 +12,9 @@ function autostage { // TODO: account for no fuel left. TODO: account for booste
 function autostage_fairings {
   parameter fairing_deploy_altitude.
 
-  print fairing_deploy_altitude.
-
   if not (defined list_of_fairings) { print "no fairings here!". }
   else if list_of_fairings:length >= 1 {
-    when ship:altitude > fairing_deploy_altitude then { // deploy dem fairings
+    when ship:altitude > 35000 then { // deploy dem fairings
       if stage_flag = 1 {
         for fairing in list_of_fairings {
           fairing:GETMODULE("ModuleProceduralFairing"):doaction("Deploy", true).
