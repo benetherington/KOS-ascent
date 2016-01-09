@@ -1,13 +1,11 @@
-parameter runmode.
-
-if runmode = "discover" { // Get info about this ship
+function mode_discover { // Get info about this ship
   lexicon_engine().
   list_stages().
   find_fairings().
   print "discover complete.".
 }
 
-else if runmode = "atmo_prelaunch" { // Prep the computer and ship for launch
+function mode_atmo_prelaunch { // Prep the computer and ship for launch
   lock throttle to limit_throttle(1).
 
   set time_to_ap_throt to pidloop(3, .18, .045, 0, 1).
@@ -18,13 +16,15 @@ else if runmode = "atmo_prelaunch" { // Prep the computer and ship for launch
   autostage().
   autostage_fairings(35000).
 
+  wait .001. // TODO: without this wait, we push infinity into the stack.
+
   print "prelaunch complete.".
 }
 
 
 
 
-else if runmode = "atmo_ascent" { // Get pretty much anything into orbit
+function mode_atmo_ascent { // Get pretty much anything into orbit
   print "starting atmospheric ascent.".
   stage.
 
@@ -37,10 +37,10 @@ else if runmode = "atmo_ascent" { // Get pretty much anything into orbit
   lock throttle to 0.
   lock steering to heading(90, 0).
 
-  print "ascent complete.". // add circularization ETA/countdown?
+  print "ascent complete.".
 }
 
-else if runmode = "circularize" {
+function mode_circularize {
   // TODO: ask for remaining time in stage, ditch nearly empty ascent stages before circularizing?
   local expected_arrival to time:seconds + eta:apoapsis.
   local burn_time to circularize_approximation().
@@ -58,7 +58,7 @@ else if runmode = "circularize" {
 
 
 
-else if runmode = "onorbit" { // Survive in space-ace-ace
+function mode_onorbit { // Survive in space-ace-ace
   print "runmode on orbit".
   set stage_flag to 0.
   list_solar_deploy(). // TODO: refactor to push function into for/in?
@@ -70,5 +70,3 @@ else if runmode = "onorbit" { // Survive in space-ace-ace
   set ship:control:pilotmainthrottle to 0.
   print "onorbit complete.".
 }
-
-else { print "I don't recognize that mode." }
