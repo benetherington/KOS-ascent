@@ -6,17 +6,17 @@ function mode_discover { // Get info about this ship
 }
 
 function mode_atmo_prelaunch { // Prep the computer and ship for launch
+  
   lock throttle to limit_throttle(1).
-
   set time_to_ap_throt to pidloop(3, .18, .045, 0, 1).
   set calcpitch_circ to pidloop(2.4, .5, 3, -10, 10). // TODO: could use further tweaking
+  
   lock steering to heading(90, calcpitch_ascent()).
 
-  global stage_flag to 1. // Enable auto-staging
+  global stage_flag to 0. // disable auto-staging until we've activated the first stage.
+
   autostage().
   autostage_fairings(35000).
-
-  wait .001. // TODO: without this wait, we push infinity into the stack.
 
   print "prelaunch complete.".
 }
@@ -25,8 +25,8 @@ function mode_atmo_prelaunch { // Prep the computer and ship for launch
 
 
 function mode_atmo_ascent { // Get pretty much anything into orbit
-  print "starting atmospheric ascent.".
   stage.
+  global stage_flag to 1. // enable autostaging.
 
   when time_to_nearest_ap() >= target_time_to_ap() then { // need a high-pass filter to reduce throttle jitter.
     lock throttle to time_to_ap_throt:update(time:seconds, time_to_nearest_ap() - target_time_to_ap()).

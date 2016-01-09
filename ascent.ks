@@ -24,8 +24,8 @@ mode_atmo_prelaunch().
 mode_atmo_ascent().
 mode_circularize().
 
-print "taking a deep breath.".
-local countdown_to_onorbit to time:seconds + 10.
-until countdown_to_onorbit >= time:seconds { countdown_inline(countdown_to_onorbit). }
+// print "taking a deep breath.".
+// local countdown_to_onorbit to time:seconds + 10.
+// until countdown_to_onorbit >= time:seconds { countdown_inline(countdown_to_onorbit). }
 
-mode_onorbit().
+// mode_onorbit().

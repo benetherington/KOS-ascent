@@ -54,6 +54,7 @@ function countdown_corner { // print the number of seconds from now to a target 
   parameter target_time, corner.
 
   if not (defined previous_time) {
+    print "new previous_time".
     local previous_time to time:seconds.
   }
 
