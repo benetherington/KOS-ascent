@@ -12,7 +12,6 @@ clearscreen. set ship:control:pilotmainthrottle to 0.
 print "loading libraries into memory.".
 run once lib_utilities.ks.
 run once lib_discover.ks.
-run once lib_atmo_prelaunch.ks.
 run once lib_atmo_ascent.ks.
 run once lib_circularize.ks.
 run once modes.ks.
@@ -20,7 +19,6 @@ run once modes.ks.
 print "our cruising altitude today will be " + target_orbit_height + ".".
 
 mode_discover().
-mode_atmo_prelaunch().
 mode_atmo_ascent().
 mode_circularize().
 
