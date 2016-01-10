@@ -1,8 +1,8 @@
+
 function mode_discover { // Get info about this ship
   lexicon_engine().
   list_stages().
   find_fairings().
-  print "discover complete.".
 }
 
 function mode_atmo_prelaunch { // Prep the computer and ship for launch
@@ -54,7 +54,6 @@ function mode_circularize {
   } else {
     half_throttle_circ_burn(burn_time, expected_arrival).
   }
-  print "circularize complete.".
 }
 
 function mode_onorbit { // Survive in space-ace-ace
