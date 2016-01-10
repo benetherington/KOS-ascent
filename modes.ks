@@ -7,7 +7,9 @@ function mode_discover { // Get info about this ship
 
 function mode_atmo_prelaunch { // Prep the computer and ship for launch
   
-  lock throttle to limit_throttle(1).
+  set throttle_limit_controller to pidloop(1, 0, 0, 0, 1).
+
+  lock throttle to 1. // TODO: fix limit throttle and implement
   set time_to_ap_throt to pidloop(3, .18, .045, 0, 1).
   set calcpitch_circ to pidloop(2.4, .5, 3, -10, 10). // TODO: could use further tweaking
   
@@ -16,7 +18,7 @@ function mode_atmo_prelaunch { // Prep the computer and ship for launch
   global stage_flag to 0. // disable auto-staging until we've activated the first stage.
 
   autostage().
-  autostage_fairings(35000).
+  autostage_fairings(30000).
 
   print "prelaunch complete.".
 }
@@ -54,9 +56,6 @@ function mode_circularize {
   }
   print "circularize complete.".
 }
-
-
-
 
 function mode_onorbit { // Survive in space-ace-ace
   print "runmode on orbit".

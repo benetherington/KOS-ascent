@@ -39,13 +39,13 @@ function half_throttle_circ_burn { parameter burn_time, expected_arrival.
   print "Coasting to half-throttle AP burn.".
 
   until time:seconds >= good_time_to_start { countdown_corner(good_time_to_start, 4). }
-  lock throttle to limit_throttle(.5).
+  lock throttle to .5. // TODO: implement limit_throttle
   lock steering to heading(90, calcpitch_circ:update(time:seconds, time_to_nearest_ap()) ).
   
   until ship:periapsis > 0 {
     // print_corner_number(round(time_to_nearest_ap, 2), 3).
   }
-  lock throttle to limit_throttle(.1).
+  lock throttle to .1. // TODO: implement limit_throttle
 
   until ship:periapsis >= ship:altitude - 10 {
     // print_corner_number(round(time_to_nearest_ap, 2), 3).

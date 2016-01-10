@@ -44,24 +44,27 @@ function countdown_inline { // print the number of seconds from now to a target 
     local previous_time to time:seconds.
   }
 
-  if time:seconds - previous_time > 1 {
+  if not (defined inline_previous_time) {
+    global inline_previous_time to time:seconds. // TODO: allow multiple counters at once. Big scope issue.
+  }
+
+  if time:seconds - inline_previous_time > 1 {
     print (-1 * floor(time:seconds - target_time)).
-    set previous_time to time:seconds.
+    set inline_previous_time to time:seconds.
   }
 }
 
 function countdown_corner { // print the number of seconds from now to a target time in a corner.
   parameter target_time, corner.
 
-  if not (defined previous_time) {
-    print "new previous_time".
-    local previous_time to time:seconds.
+  if not (defined corner_previous_time) {
+    global corner_previous_time to time:seconds. // TODO: allow multiple counters at once. Big scope issue.
   }
 
-  if time:seconds - previous_time > 1 {
+  if time:seconds - corner_previous_time > 1 {
     print_corner("  ", corner).
     print_corner_number( (-1 * floor(time:seconds - target_time)), corner).
-    set previous_time to time:seconds.
+    set corner_previous_time to time:seconds.
   }
 }
 

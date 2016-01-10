@@ -2,7 +2,7 @@
 
 function autostage { // TODO: account for no fuel left. TODO: account for boosters. TODO: allow for a pause between decouple and iginition.
   when stage:liquidfuel < 0.1 then {
-    if stage_flag = 1 {
+    if stage_flag = 1 { // TODO: implement stage:ready
       stage.
       preserve.
     }
@@ -11,7 +11,7 @@ function autostage { // TODO: account for no fuel left. TODO: account for booste
 
 function autostage_fairings {
   parameter incoming_altitude.
-  local fairing_deploy_altitude to incoming_altitude.
+  global fairing_deploy_altitude to incoming_altitude.
 
   when ship:altitude > fairing_deploy_altitude then { // deploy dem fairings
     if stage_flag = 1 {
@@ -25,13 +25,30 @@ function autostage_fairings {
 function limit_throttle { // take a requested throttle and limit it if it's too high.
   parameter requested_throttle.
 
-  if not (defined maximum_safe_Gs) {
-    global maximum_safe_Gs to 2.
-  }
+// SET PREV_TIME to TIME:SECONDS.
+// SET PREV_VEL to SHIP:VELOCITY.
+// SET ACCEL to V(9999,9999,9999).
+// PRINT "Waiting for accellerations to stop.".
+// UNTIL ACCEL:MAG < 0.5 {
+//     SET ACCEL TO (SHIP:VELOCITY - PREV_VEL) / (TIME:SECONDS - PREV_TIME).
+//     SET PREV_TIME to TIME:SECONDS.
+//     SET PREV_VEL to SHIP:VELOCITY.
 
-  local max_throttle to (ship:mass * maximum_safe_Gs / max(ship:availablethrust,1)). // TODO: account for drag. Account for SRBs.
-  return min(requested_throttle, max_throttle).
+//     WAIT 0.001.  // This line is Vitally Important.
+// }
+
+
+//   if not (defined maximum_safe_Gs) {
+//     global maximum_safe_Gs to 2.
+//   }
+
+//   local max_throttle to throttle_limit_controller:update(time:seconds, )
+//   return min(requested_throttle, max_throttle).
 }
+
+
+
+
 
 function calcpitch_ascent { // calculate a rough gravity turn
                             // TODO: figure out how to calculate an actual gravity turn.
