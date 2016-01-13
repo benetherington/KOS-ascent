@@ -43,12 +43,12 @@ function half_throttle_circ_burn { parameter burn_time, expected_arrival.
   lock steering to heading(90, calcpitch_circ:update(time:seconds, time_to_nearest_ap()) ).
   
   until ship:periapsis > 0 {
-    // print_corner_number(round(time_to_nearest_ap, 2), 3).
+    // print_corner(round(time_to_nearest_ap, 2), 3).
   }
   lock throttle to limit_throttle(.1). //TODO: control by smooth acceleration curve
 
   until ship:periapsis >= ship:altitude - 10 {
-    // print_corner_number(round(time_to_nearest_ap, 2), 3).
+    // print_corner(round(time_to_nearest_ap, 2), 3).
   }
   lock throttle to 0.
 }
