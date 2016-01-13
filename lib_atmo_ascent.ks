@@ -9,11 +9,11 @@ function autostage { // TODO: account for no fuel left. TODO: account for booste
   }
 }
 
-function autostage_fairings {
+function autostage_fairings { // take a list of fairings and eject them when the time is right
   parameter incoming_altitude.
-  global fairing_deploy_altitude to incoming_altitude.
+  global fairing_deploy_altitude to incoming_altitude. // local scope makes this value unavailable in the following trigger
 
-  when ship:altitude > fairing_deploy_altitude then { // deploy dem fairings
+  when ship:altitude > fairing_deploy_altitude then { 
     if stage_flag = 1 {
       for fairing in list_of_fairings {
         fairing:GETMODULE("ModuleProceduralFairing"):doaction("Deploy", true).
@@ -22,33 +22,13 @@ function autostage_fairings {
   }
 }
 
-function limit_throttle { // take a requested throttle and limit it if it's too high.
+function limit_throttle { // take a requested throttle and limit it if it causes acceleration higher than max limit
   parameter requested_throttle.
 
-// SET PREV_TIME to TIME:SECONDS.
-// SET PREV_VEL to SHIP:VELOCITY.
-// SET ACCEL to V(9999,9999,9999).
-// PRINT "Waiting for accellerations to stop.".
-// UNTIL ACCEL:MAG < 0.5 {
-//     SET ACCEL TO (SHIP:VELOCITY - PREV_VEL) / (TIME:SECONDS - PREV_TIME).
-//     SET PREV_TIME to TIME:SECONDS.
-//     SET PREV_VEL to SHIP:VELOCITY.
-
-//     WAIT 0.001.  // This line is Vitally Important.
-// }
-
-
-//   if not (defined maximum_safe_Gs) {
-//     global maximum_safe_Gs to 2.
-//   }
-
-//   local max_throttle to throttle_limit_controller:update(time:seconds, )
-//   return min(requested_throttle, max_throttle).
-  return requested_throttle.
+  local max_throttle to 1.
+  
+  return min(requested_throttle, max_throttle).
 }
-
-
-
 
 
 function calcpitch_ascent { // calculate a rough gravity turn
@@ -64,15 +44,16 @@ function calcpitch_ascent { // calculate a rough gravity turn
 }
 
 function target_time_to_ap { // can be uncommented/refined for single burn to orbit
-//  local b to 60.
+//  local b to 60. // TODO: think about target time to AP and make it a bit smarter
 //  local a to -b/target_orbit_height.
 //  return a * (ship:altitude) + b.
   return 60.
 }
 
 function circularize_approximation { // figure out how long the circularization burn will take
-  local dv_needed to orbital_velocity(target_orbit_height) - velocityat(ship, time + ETA:apoapsis):orbit:mag. // TODO: allow custom target orbit
+  local dv_needed to orbital_velocity(target_orbit_height) - velocityat(ship, time + ETA:apoapsis):orbit:mag. // TODO: allow custom target orbit eccentricity
   local momentary_acceleration to ship:availablethrust/ship:mass.
+  
   return dv_needed/momentary_acceleration.
 }
 

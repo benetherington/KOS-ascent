@@ -15,7 +15,7 @@ function lexicon_engine { // Find all stages with engines
 }
 
 function list_stages {  // Understand what each stage does.
-  global stage_list to list().
+  global stage_list to list(). // TODO: change to queue.
   from { local x is 0. } until x >= stage:number step { set x to x + 1. } do {
     if engine_lex:haskey(x) {
       stage_list:add(1).
@@ -25,7 +25,7 @@ function list_stages {  // Understand what each stage does.
   }
 }
 
-function find_fairings {
+function find_fairings { // Find all fairings, put them in a list
   global list_of_fairings to list().
   for part in ship:parts {
     for module in part:modules {

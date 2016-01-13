@@ -2,7 +2,7 @@
 
 function orbital_velocity {
   parameter target_alt.
-  return sqrt( (constant:G * kerbin:mass)/(kerbin:radius + target_alt) ).
+  return sqrt( (constant:G * kerbin:mass) / (kerbin:radius + target_alt) ).
 }
 
 function time_to_nearest_ap { // allows negative ETA:apoapsis
@@ -12,6 +12,7 @@ function time_to_nearest_ap { // allows negative ETA:apoapsis
      return 0 - (ship:orbit:period - ETA:apoapsis).  // we're past AP!
   }
 }
+
 
 function print_corner { parameter text. parameter mode. // 1: upper-left, 2: upper-right, 3: lower-left, 4: lower-right
   local row to 0.
