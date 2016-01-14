@@ -4,9 +4,9 @@
 // init functions
 global staging_cooldown_bookmark to time:seconds.
 
-function autostage { // TODO: account for no fuel left. TODO: account for boosters. TODO: allow for a pause between decouple and iginition.
+function autostage { // TODO: account for no fuel left. TODO: account for boosters.
   when stage:liquidfuel < 0.1 and staging_cooldown() then {
-    if stage_flag = 1 { // TODO: implement stage:ready
+    if stage_flag = 1 {
       stage.
       preserve.
     }
@@ -16,7 +16,7 @@ function autostage { // TODO: account for no fuel left. TODO: account for booste
 function autostage_fairings { // take a list of fairings and eject them when the time is right
   parameter incoming_altitude.
   on_stage().
-  
+
   global fairing_deploy_altitude to incoming_altitude. // local scope makes this value unavailable in the following trigger
 
   when (ship:altitude > fairing_deploy_altitude) then { 
