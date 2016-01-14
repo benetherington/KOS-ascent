@@ -1,7 +1,11 @@
 /////////////////// ASCENT
 
+
+// init functions
+global staging_cooldown_bookmark to time:seconds.
+
 function autostage { // TODO: account for no fuel left. TODO: account for boosters. TODO: allow for a pause between decouple and iginition.
-  when stage:liquidfuel < 0.1 then {
+  when stage:liquidfuel < 0.1 and staging_cooldown() then {
     if stage_flag = 1 { // TODO: implement stage:ready
       stage.
       preserve.
@@ -11,9 +15,11 @@ function autostage { // TODO: account for no fuel left. TODO: account for booste
 
 function autostage_fairings { // take a list of fairings and eject them when the time is right
   parameter incoming_altitude.
+  on_stage().
+  
   global fairing_deploy_altitude to incoming_altitude. // local scope makes this value unavailable in the following trigger
 
-  when ship:altitude > fairing_deploy_altitude then { 
+  when (ship:altitude > fairing_deploy_altitude) then { 
     if stage_flag = 1 {
       for fairing in list_of_fairings {
         fairing:GETMODULE("ModuleProceduralFairing"):doaction("Deploy", true).
@@ -21,6 +27,19 @@ function autostage_fairings { // take a list of fairings and eject them when the
     }
   }
 }
+
+function on_stage { // flipflops back and forth when you stage, resetting staging_cooldown_bookmark.
+  when stage:ready then {
+    when not stage:ready then { set staging_cooldown_bookmark to time:seconds. on_stage(). }
+  }
+}
+
+
+function staging_cooldown {
+  return ( staging_cooldown_bookmark+staging_cooldown_buffer < time:seconds ).
+}
+
+
 
 function limit_throttle { // take a requested throttle and limit it if it causes acceleration higher than max limit
   parameter requested_throttle.
@@ -53,7 +72,7 @@ function target_time_to_ap { // can be uncommented/refined for single burn to or
 function circularize_approximation { // figure out how long the circularization burn will take
   local dv_needed to orbital_velocity(target_orbit_height) - velocityat(ship, time + ETA:apoapsis):orbit:mag. // TODO: allow custom target orbit eccentricity
   local momentary_acceleration to ship:availablethrust/ship:mass.
-  
+
   return dv_needed/momentary_acceleration.
 }
 

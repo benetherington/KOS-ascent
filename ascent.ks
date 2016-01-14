@@ -1,8 +1,9 @@
 set terminal:visualbeep to true.
 
 
-global target_orbit_height to 75000.
-global maximum_safe_Gs to 2.
+global target_orbit_height to 75000.    // How high do you want to go?
+global maximum_safe_Gs to 2.            // How fast do you want to get there?
+global staging_cooldown_buffer to 2.    // How quickly should we stage? Handy for recovery.
 //TODO: allow inclination selection
 //TODO: allow coplanar launches
 

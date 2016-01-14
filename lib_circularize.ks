@@ -4,7 +4,7 @@ function precise_circ_throt { // start high, drop as PE rises
   if ship:periapsis < 0 {
     return 1.
   } else {
-    return max(-0.00001267606 * ship:periapsis + 1, .1). //TODO allow custom target altitude
+    return max(-0.00001267606 * ship:periapsis + 1, .1). //TODO allow custom target eccentricity
   }
 }
 
