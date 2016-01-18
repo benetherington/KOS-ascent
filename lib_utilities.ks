@@ -50,7 +50,7 @@ function countdown_corner { // print the number of seconds from now to a target 
     global corner_previous_time to time:seconds. // TODO: allow multiple counters at once. Big scope issue.
   }
 
-  if time:seconds - corner_previous_time > 1 {
+  if time:seconds - corner_previous_time > 1 { // TODO: make sure first number prints correctly.
     print_corner("  ", corner).
     print_corner( (-1 * floor(time:seconds - target_time)), corner).
     set corner_previous_time to time:seconds.

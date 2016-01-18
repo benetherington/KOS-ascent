@@ -1,21 +1,22 @@
 /////////////////// ASCENT
 
 
-// init functions
+// init variables
 global staging_cooldown_bookmark to time:seconds.
+// TODO: define backup global staging_cooldown_buffer.
+// TODO: define backup stage_flag.
 
-function autostage { // TODO: account for no fuel left. TODO: account for boosters.
-  when stage:liquidfuel < 0.1 and staging_cooldown() then {
-    if stage_flag = 1 {
-      stage.
-      preserve.
-    }
+
+function autostage { // TODO: account for strap-on boosters. TODO: account for ullage motors.
+  when (   (there_are_flamed_out_engines() or ship:maxthrust = 0) and staging_cooldown() ) and stage_flag = 1 then {
+    log "autostage" to log.txt.
+    stage.
+    preserve.
   }
 }
 
 function autostage_fairings { // take a list of fairings and eject them when the time is right
   parameter incoming_altitude.
-  on_stage().
 
   global fairing_deploy_altitude to incoming_altitude. // local scope makes this value unavailable in the following trigger
 
@@ -33,7 +34,6 @@ function on_stage { // flipflops back and forth when you stage, resetting stagin
     when not stage:ready then { set staging_cooldown_bookmark to time:seconds. on_stage(). }
   }
 }
-
 
 function staging_cooldown {
   return ( staging_cooldown_bookmark+staging_cooldown_buffer < time:seconds ).
@@ -76,6 +76,12 @@ function circularize_approximation { // figure out how long the circularization 
   return dv_needed/momentary_acceleration.
 }
 
+
+
+
+
+// init functions
+on_stage().
 wait .001.
 
 

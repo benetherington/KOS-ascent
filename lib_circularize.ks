@@ -38,11 +38,13 @@ function half_throttle_circ_burn { parameter burn_time, expected_arrival.
 
   print "Coasting to half-throttle AP burn.".
 
+  // TODO: add timewarp.
+
   until time:seconds >= good_time_to_start { countdown_corner(good_time_to_start, 4). }
   lock throttle to limit_throttle(.5).
-  lock steering to heading(90, calcpitch_circ:update(time:seconds, time_to_nearest_ap()) ).
+  lock steering to heading(90, calcpitch_circ:update(time:seconds, time_to_nearest_ap()) ). // TODO: control by AP instead of time to AP? Ascend a bit too high then burn early?
   
-  until ship:periapsis > 0 {
+  until ship:periapsis > 0 { //TODO: control by throttle as long as possible.
     // print_corner(round(time_to_nearest_ap, 2), 3).
   }
   lock throttle to limit_throttle(.1). //TODO: control by smooth acceleration curve
