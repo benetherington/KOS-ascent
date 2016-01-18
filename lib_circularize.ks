@@ -4,7 +4,7 @@ function precise_circ_throt { // start high, drop as PE rises
   if ship:periapsis < 0 {
     return 1.
   } else {
-    return max(-0.00001267606 * ship:periapsis + 1, .1). //TODO allow custom target eccentricity
+    return max(-0.00001267606 * ship:periapsis + 1, .01). //TODO allow custom target eccentricity
   }
 }
 
@@ -42,20 +42,20 @@ function half_throttle_circ_burn { parameter burn_time, expected_arrival.
 
   until time:seconds >= good_time_to_start { countdown_corner(good_time_to_start, 4). }
   lock throttle to limit_throttle(.5).
-  lock steering to heading(90, calcpitch_circ:update(time:seconds, time_to_nearest_ap()) ). // TODO: control by AP instead of time to AP? Ascend a bit too high then burn early?
+  lock steering to heading(90, calcpitch_circ:update(time:seconds, circularization_strategy()) ). // TODO: control by AP instead of time to AP? Ascend a bit too high then burn early?
   
-  until ship:periapsis > 0 { //TODO: control by throttle as long as possible.
-    // print_corner(round(time_to_nearest_ap, 2), 3).
-  }
+  wait until ship:periapsis > 0. //TODO: control by throttle as long as possible.
   lock throttle to limit_throttle(.1). //TODO: control by smooth acceleration curve
+  lock steering to heading(90, calcpitch_circ:update(time:seconds, time_to_nearest_ap()) ).
 
-  until ship:periapsis >= ship:altitude - 10 {
-    // print_corner(round(time_to_nearest_ap, 2), 3).
-  }
+  wait until ship:periapsis >= ship:altitude - 10.
   lock throttle to 0.
 }
 
-
+function circularization_strategy { // Strategy to keep AP as close to the target as possible.
+  if time_to_nearest_ap > 0 { return ship:apoapsis-target_orbit_height. }
+                       else { return time_to_nearest_ap(). }
+}
 
 
 

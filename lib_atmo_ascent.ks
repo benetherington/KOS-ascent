@@ -7,8 +7,8 @@ global staging_cooldown_bookmark to time:seconds.
 // TODO: define backup stage_flag.
 
 
-function autostage { // TODO: account for strap-on boosters. TODO: account for ullage motors.
-  when (   (there_are_flamed_out_engines() or ship:maxthrust = 0) and staging_cooldown() ) and stage_flag = 1 then {
+function autostage { // TODO: account for ullage motors.
+  when ( (there_are_flamed_out_engines() or ship:maxthrust = 0) and staging_cooldown() ) and stage_flag = 1 then {
     log "autostage" to log.txt.
     stage.
     preserve.

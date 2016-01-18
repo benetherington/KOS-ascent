@@ -8,7 +8,6 @@ function mode_discover { // Get info about this ship
 function mode_atmo_ascent { // Get pretty much anything into orbit
   // set throttle_limit_controller to pidloop(1, 0, 0, 0, 1).
   set time_to_ap_throt to pidloop(3, .18, .045, 0, 1). // TODO: need to tune for rediculously high thrust
-  set calcpitch_circ to pidloop(2.4, .5, 3, -10, 10). // TODO: could use further tweaking
   
   lock steering to heading(90, calcpitch_ascent()). // TODO: fix roll
   lock throttle to limit_throttle( time_to_ap_throt:update(time:seconds, time_to_nearest_ap() - target_time_to_ap()) ).
@@ -42,16 +41,19 @@ function mode_circularize {
   // TODO: ask for remaining time in stage, ditch nearly empty ascent stages before circularizing?
   local expected_arrival to time:seconds + eta:apoapsis.
   local burn_time to circularize_approximation().
+  set calcpitch_circ to pidloop(2.4, .5, 3, -10, 10). // TODO: re-tweak to account for new strategy
 
   lock steering to heading(90, 0).
-  set RCS to on.
+  RCS on.
 
   if burn_time > (eta:apoapsis * .9) {
     full_throttle_circ_burn(burn_time, expected_arrival).
   } else {
     half_throttle_circ_burn(burn_time, expected_arrival).
   }
+
   set stage_flag to 0.
+  RCS off.
   print "circularize complete.".
 }
 
