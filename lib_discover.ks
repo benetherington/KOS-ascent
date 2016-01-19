@@ -64,6 +64,15 @@ function find_fairings { // Find all fairings, put them in a list. TODO: include
   }
 }
 
+function TWR {
+  return ship:availablethrust/ship:mass/9.81.
+}
+
+function throttle_needed_for_TWR_of {
+  parameter TWR_needed.
+  return (TWR_needed/TWR()).
+}
+
 
   // TODO: log TWR to find good requirements.
   // TODO: Find the minimum TWR of each stage with an engine. Limit if too high (to save pogo)
