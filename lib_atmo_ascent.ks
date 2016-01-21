@@ -63,10 +63,27 @@ function calcpitch_ascent { // calculate a rough gravity turn
 }
 
 function target_time_to_ap { // can be uncommented/refined for single burn to orbit
-//  local b to 60. // TODO: think about target time to AP and make it a bit smarter
-//  local a to -b/target_orbit_height.
-//  return a * (ship:altitude) + b.
-  return 60.
+
+  local max_time_to_ap to 60.           // we will fly as fast as we can until we get to this cap
+  local reduce_start_altitude to 50000. // when should we start dropping from max_time_to_ap?
+  local final_time_to_ap to 20.         // how many seconds to AP should we have when we get our AP to target?
+
+
+  // pay no attention to the calculations behind the curtain!
+  local m_constant_bottom to 0.0058.   // pre-calculated constants for the beginning of the flight
+  local b_constant_bottom to 19.7.
+  local m_constant_top to (max_time_to_ap-final_time_to_ap)/(reduce_start_altitude-target_orbit_height).
+  local b_constant_top to final_time_to_ap-m_constant_top*(target_orbit_height).
+
+  if ship:altitude < (60-b_constant_bottom)/m_constant_bottom {
+    return m_constant_bottom * ship:altitude + b_constant_bottom.
+  } else if ship:altitude < reduce_start_altitude {
+    return 60.
+  } else {
+    log (m_constant_top * ship:altitude + b_constant_top) + "," + ship:altitude to log.txt.
+    return m_constant_top * ship:altitude + b_constant_top.
+  }
+
 }
 
 function circularize_approximation { // figure out how long the circularization burn will take

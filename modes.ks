@@ -7,7 +7,7 @@ function mode_discover { // Get info about this ship
 
 function mode_atmo_ascent { // Get pretty much anything into orbit
   // set throttle_limit_controller to pidloop(1, 0, 0, 0, 1).
-  set time_to_ap_throt to pidloop(3, .18, .045, 0, 1). // TODO: need to tune for rediculously high thrust
+  set time_to_ap_throt to pidloop(3, .18, .045, .1, 1). // TODO: need to tune for rediculously high thrust
   
   lock steering to heading(90, calcpitch_ascent()). // TODO: fix roll
   lock throttle to limit_throttle( time_to_ap_throt:update(time:seconds, time_to_nearest_ap() - target_time_to_ap()) ).
@@ -25,9 +25,9 @@ function mode_atmo_ascent { // Get pretty much anything into orbit
 
   // TODO: for low TWR vehicles, allow higher pitch when time to AP is slipping.
 
-  // when time_to_nearest_ap() >= target_time_to_ap() then { // TODO: need a high-pass filter to reduce throttle jitter.
-  //   lock throttle to limit_throttle( time_to_ap_throt:update(time:seconds, time_to_nearest_ap() - target_time_to_ap()) ).
-  //   print "Throttle limiting".
+  // when ship:altitude>50000 and target_time_to_ap()<30 then {
+  //   print "retuning kd".
+  //   set time_to_ap_throt:kd to .06.
   // }
 
   wait until ship:apoapsis >= target_orbit_height. //TODO: for high TWR vehicles, pitch down near end of ascent burn? Maybe minimum throttle?
